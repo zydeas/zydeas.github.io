@@ -3,9 +3,26 @@
 <head>
 	<title>ZYDEAS</title>
 	
+	<link rel="stylesheet" type="text/css" href="util.css">
+	
 	<style type="text/css">
+		
+		:root{
+			--rainbow1: hsl(60, 80%, 60%);
+			--rainbow2: hsl(120, 80%, 60%);
+			--rainbow3: hsl(180, 80%, 60%);
+			--rainbow4: hsl(300, 80%, 60%);
+			--rainbow5: hsl(30, 80%, 60%);
+			--rainbow_gradient: linear-gradient(to bottom, 
+				 var(--rainbow1) 0%, 
+				 var(--rainbow2) 20%, 
+				 var(--rainbow3) 40%,
+				 var(--rainbow4) 80%,
+				 var(--rainbow5) 100%);
+		}
+		
 		body{
-			
+			color: hsl(120, 60%, 80%);
 			font-size: 16px;
 		}
 		
@@ -19,6 +36,11 @@
 		
 		.title{
 			font-size: 64px;
+			color:white;
+		}
+		
+		a:link {
+			color:hsl(260, 60%, 80%);
 		}
 		
 		/*.container{
@@ -31,12 +53,25 @@
 			max-width: 1024px;
 		}
 		
-		.box{
+		.module-border-wrap{
 			vertical-align: top;
-			outline: 1px solid;
-			margin: 6px 6px 8px 3px;
-			padding: 4px 4px 4px 4px;
+			margin: 6px 6px 20px 3px;
 			
+			padding: 1rem;
+			position: relative;
+			background-blend-mode: multiply;
+			background: var(--rainbow_gradient);
+						
+			padding: 6px;
+		}
+		
+		#AboutBox 			{ box-shadow: 0px 0px 5px 5px hsl(240, 70%, 40%); }
+		#ProficienciesBox 	{ box-shadow: 0px 0px 5px 5px hsl(10, 60%, 50%);  }
+		
+		.module{
+			padding: 8px 12px 8px 12px;
+			background: black;
+			clip-path: inset(0px 0px 0px 0px);
 			/*max-width: 40%;*/
 		}
 		
@@ -93,7 +128,7 @@
 	<meta name="author" content="C.L. Kerl">
 </head>
 	
-<body>
+<body style="background-color:black;">
 	<div align="Center">
 		<h1 class="title">Zydeas</h1>
 	</div>
@@ -101,25 +136,28 @@
 	<div class="content row">
 			
 		<div class="column"> 
-			<div class="box">
+			
+			<div class="module-border-wrap" id="AboutBox"> <div class="module">
 				<h2>About</h2>
 				<p>
-					I am <b>C.L. Kerl</b>, a 24-yo freelance software engineer & game developer/designer. I've been game development & programming as a hobby since I was 9.
+					I am <b>C.L. Kerl</b>, a 24-yo freelance software engineer, game developer & designer. I've been experimenting with game development & programming since I was 9.
 					<br> 
 					
 					<ul>
 						<li><b>Email:</b> <a href="mailto:zydeas@protonmail.com">zydeas@protonmail.com</a></li>
 						<li><a href="https://www.youtube.com/channel/UCVnDIbF81rF0E5Rw7VKh6gQ">Youtube<br></a></li>
 						<li><a href="https://twitter.com/TheRealZargy">Twitter<br></a></li>
-						<li><b>Resume:</b> <a href="">Web</a>, <a href="">PDF</a></li>
-						
+						<!-- <li><b>Resume:</b> <a href="">Web</a>, <a href="">PDF</a></li> -->
 					</ul>
 				</p>
-			</div>
+			</div> </div>
 			
-			<div class="box">
+			
+			<div class="module-border-wrap" id="ProficienciesBox"> <div class="module">
 				<h2>Proficiencies</h3>
-				<b>Game Engines:</b> Unity, Game Maker Studio 2. (I am also quite fast at learning prebuilt engines)<br>
+				
+				<b>Game Engines:</b> Unity, Game Maker Studio 2.<br>
+				
 				<b>Languages:</b> C++, C#, LUA, <a href="http://odin-lang.org/" target="_blank">Odin</a>, JSON, HTML, CSS <br>
 				
 				<b>Game Development:</b> Systems Design, Gameplay, UI, Data, Game Design
@@ -132,12 +170,14 @@
 						<li><b>UI:</b> Menus, HUD design</li>
 						<li><b>Data:</b></li>
 					</ul>
-				</div> -->
-			</div>
+				</div> --> 
+			</div> </div>
 		</div>
 		
 		<div class="column"> <div class="box">
 			<h2>Games</h2>
+			
+			Currently, most of my game development knowledge comes from
 			
 			<div class="box">
 				<h3>With <a href = "https://studio-anjin.co.uk/">Studio Anjin</a></h3>
