@@ -5,43 +5,73 @@
 	<title>ZYDEAS</title>
 	
 	<link rel="stylesheet" type="text/css" href="util.css">
+	<link rel="stylesheet" href="fonts/Vollkorn/stylesheet.css" type="text/css" charset="utf-8" />
 	
 	<style type="text/css">
 		
-		:root{
-			--rainbow1: hsl(60, 80%, 60%);
-			--rainbow2: hsl(120, 80%, 60%);
-			--rainbow3: hsl(180, 80%, 60%);
-			--rainbow4: hsl(300, 80%, 60%);
-			--rainbow5: hsl(30, 80%, 60%);
+		/*:root{
+			--rainbow1: hsl(45, 80%, 50%);
+			--rainbow2: hsl(105, 60%, 50%);
+			--rainbow3: hsl(165, 60%, 70%);
+			--rainbow4: hsl(270, 40%, 60%);
+			--rainbow5: hsl(10, 60%, 70%);
 			--rainbow_gradient: linear-gradient(to bottom, 
 				 var(--rainbow1) 0%, 
 				 var(--rainbow2) 20%, 
 				 var(--rainbow3) 40%,
 				 var(--rainbow4) 80%,
 				 var(--rainbow5) 100%);
+		}*/
+		
+		:root{
+			--grad1: hsl(60, 70%, 70%);
+			--grad2: hsl(50, 80%, 70%);
+			--grad3: hsl(40, 60%, 50%);
+			--grad4: hsl(30, 70%, 40%);
+			--gold_gradient: linear-gradient(to bottom, 
+				 var(--grad1) 0%, 
+				 var(--grad2) 50%, 
+				 var(--grad3) 80%, 
+				 var(--grad4) 98% );
 		}
 		
-		body{
-			color: hsl(120, 60%, 80%);
-			font-size: 16px;
+		body {
+			font-family: Georgia;
+			color: hsl(20, 60%, 70%);
 		}
 		
 		h2 { margin-top: 0px; text-align: center; }
 		
-		h3
-		{
+		h3 {
 			margin-top: 0px;
 			margin-bottom: 5px
 		}
 		
 		.title{
-			font-size: 64px;
+			font-family:vollkorn_scregular;
+			margin-top: -20px;
+			margin-bottom: 0;
+			font-size: 90px;
+			letter-spacing: 20px;
 			color:white;
 		}
 		
+		.box_header {
+			font-family:vollkorn_scregular;
+			font-size: 30px;
+			margin-bottom: 0;
+		}
+		
 		a:link {
-			color:hsl(260, 60%, 80%);
+			color:hsl(200, 60%, 80%);
+		}
+		
+		a:active {
+			color:hsl(1, 60%, 80%);
+		}
+		
+		a:visited {
+			color:hsl(100, 60%, 80%);
 		}
 		
 		/*.container{
@@ -61,22 +91,25 @@
 		
 		.column {
 			flex: 50%;
+			flex-direction: column;
 		}
 		
 		.module-border-wrap{
+			
 			vertical-align: top;
-			margin: 6px 6px 20px 3px;
+			margin: 6px 10px 20px 10px;
 			
 			padding: 1rem;
 			position: relative;
 			background-blend-mode: multiply;
-			background: var(--rainbow_gradient);
+			background: var(--gold_gradient);
 						
 			padding: 6px;
 		}
 		
-		#AboutBox 			{ box-shadow: 0px 0px 5px 5px hsl(240, 70%, 40%); }
-		#ProficienciesBox 	{ box-shadow: 0px 0px 5px 5px hsl(10, 60%, 50%);  }
+		#AboutBox 			{ box-shadow: 0px 0px 3px 3px hsl(240, 10%, 10%); }
+		#ProficienciesBox 	{ box-shadow: 0px 0px 5px 5px hsl(240, 10%, 10%);  }
+		#GamesBox		 	{ box-shadow: 0px 0px 5px 5px hsl(240, 10%, 10%); flex: 1;  }
 		
 		.module{
 			padding: 8px 12px 8px 12px;
@@ -102,18 +135,27 @@
 		}
 		
 		.link_button{
-			-moz-appearance: button;
-			-ms-appearance: button;
-			-o-appearance: button;
-			-webkit-appearance: button;
-			appearance: button;
-			text-decoration: none;
-			color: #000;
-			padding: 6px 6px;
-			margin-bottom: 3px;
-			white-space: nowrap;
-			display: inline-block;
-			text-align: center;
+			margin-right: -10px;
+			margin-left: -10px;
+			
+			background-color: hsla(0, 100%, 100%, .2);
+			
+			/*box-shadow:inset 0px 1px 0px 0px #cf866c;
+			border-radius:11px;
+			border:2px solid #942911;*/
+			
+			display:inline-block;
+			cursor:pointer;
+			
+			padding: 17px 24px;
+			text-decoration:none;
+					
+			transition-duration: 0.2s;
+		}
+		
+		.link_button:hover {
+			
+			background-color: hsla(0, 100%, 100%, .4);
 		}
 		
 		.link_button > h4
@@ -123,14 +165,14 @@
 		
 		.link_button > p
 		{
-			line-height: 	1em;
+			line-height: 	1.3em;
 			white-space:	normal;
 			max-width:		500px;
 			margin-top:		-10px;
 			margin-bottom:	6px;
 			text-align: 	left;
 		}
-		
+			
 	</style>
 	
 	<meta charset="utf-8">
@@ -138,9 +180,12 @@
 	<meta name="author" content="C.L. Kerl">
 </head>
 	
-<body style="background-color:black;">
+<body style="background-color:hsl(250, 20%, 15%);">
 	<div align="Center">
-		<h1 class="title">Zydeas</h1>
+		<i class="noselect">These are not mere ideas. These are...</i>
+		<h1 class="title noselect">Zydeas</h1>
+		<!-- <h5 id="quote">quote</h5> -->
+		
 	</div>
 	
 	<div class="content row">
@@ -148,7 +193,7 @@
 		<div class="column"> 
 			
 			<div class="module-border-wrap" id="AboutBox"> <div class="module">
-				<h2>About</h2>
+				<h2 class="box_header">About</h2>
 				<p>
 					I am <b>C.L. Kerl</b>, a 24-yo freelance software engineer, game developer & designer. I've been experimenting with game development & programming since I was 9.
 					<br> 
@@ -164,7 +209,7 @@
 			
 			
 			<div class="module-border-wrap" id="ProficienciesBox"> <div class="module">
-				<h2>Proficiencies</h3>
+				<h2 class="box_header">Proficiencies</h2>
 				
 				<b>Game Engines:</b> Unity, Game Maker Studio 2.<br>
 				
@@ -184,15 +229,16 @@
 			</div> </div>
 		</div>
 		
-		<div class="column"> <div class="box">
-			<h2>Games</h2>
+		<div class="column"> 
+			<div class="module-border-wrap" id="GamesBox"> <div class="module">
+			<h2 class="box_header">Games</h2>
 			
-			Currently, most of my game development knowledge comes from
+			<!-- Currently, most of my game development knowledge comes from -->
 			
 			<div class="box">
 				<h3>With <a href = "https://studio-anjin.co.uk/">Studio Anjin</a></h3>
 				<div><a	href="https://studioanjin.itch.io/the-midnight-station" class="link_button" target="_blank">
-					<h4>The Midnight Station (2015)</h4>
+					<h4 align="center">The Midnight Station (2015)</h4>
 					<p>An eldritch, surrealist Action-RPG styled to look like a ZX Spectrum game. Made for SpeccyJam 2015.</p>
 				</a></div>
 				
@@ -201,9 +247,18 @@
 					<p>A 3D massive monster-battling turn-based JRPG platformer set in a stunning futuristic theme park. Follow @StudioAnjin for updates.</p>
 				</a></div>
 			</div>
-		</div></div>		
+			</div></div>		
+		</div>
+		
+		<div class="column module-border-wrap" id="GamesBox"> <div class="module">
+			<h2 class="box_header">Blog</h2>
+			TBA...
+		</div></div>
+		
 	</div>
+	
 </body>
 	
 <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+<script src="main.js"></script>
 </html>
