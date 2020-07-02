@@ -46,8 +46,6 @@ h3 {
 	letter-spacing: 20px;
 	color: hsl(0, 0%, 5%);
 	
-	
-	
     text-shadow:-1px -1px 2px	hsl(200, 10%, 50%),
     			-2px -2px 0px	hsl(200, 50%, 90%),
     			 0px 0px 0 		hsl(200, 20%, 20%),
@@ -70,6 +68,16 @@ h3 {
 
 #title_blurb {
 	text-shadow: 1px 1px 5px hsl(10, 50%, 60%);
+}
+
+#title_blurb_small {
+	font-size: 13px;
+	text-shadow: 1px 1px 5px hsl(10, 50%, 60%);
+}
+
+#title_small {
+	font-size: clamp(70px, 10vw, 70px);
+	letter-spacing: 30px;
 }
 
 .box_header {
@@ -97,6 +105,23 @@ a:active {
 
 a:visited {
 	color:hsl(100, 60%, 80%);
+}
+
+a.no_link_indicators {
+	color: black;
+	text-decoration: none;
+}
+
+a.no_link_indicators:hover {
+	color: black;
+}
+
+a.no_link_indicators:active {
+	color: black;
+}
+
+a.no_link_indicators:visited {
+	color: black;
 }
 
 /*.container{
