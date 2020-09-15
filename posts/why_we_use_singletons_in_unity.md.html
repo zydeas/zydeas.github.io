@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="generator" content="pandoc" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+	<meta name="author" content="C.L. Kerl" />
+	<meta name="dcterms.date" content="2020-06-20" />
+	<title>Why do unity devs use singletons so much? | ZYDEAS</title>
+	
+	<link rel="stylesheet" href="../markdown.css" type="text/css" charset="utf-8" />
+	<link rel="stylesheet" href="../fonts/Vollkorn/stylesheet.css" type="text/css" charset="utf-8" />
+	<link rel="stylesheet" type="text/css" href="../util.css">
+	<link rel="stylesheet" type="text/css" href="../style.css" charset="utf-8">
+</head>
+
+<body>
+	<div align="Center">
+		<i class="noselect" id="title_blurb_small">These are not mere pedestrian ideas. These are...</i>
+		<div class="title_wrapper"> <a href="../index.html" class="title no_link_indicators" id="title_small">Zydeas</a> </div>
+		<!-- <h5 id="quote">quote</h5> -->
+	</div>
+	
+	<div class="content row"><div class="column"> 
+		<div class="module_border_wrap"> <div class="module">
+			<h2 class="box_header">Why do unity devs use singletons so much?</h2>
+			<i>C.L. Kerl, &emsp; June 20, 2020</i>	
+
+			<div><p>One useful mechanism unity developers tend to use are what I call <strong>statically available controllers</strong>. However, most people call them <strong>Singletons</strong>. If you’re just starting out and reading lots of Unity tutorials, you’ll see many people using them. But why exactly? And why do some other developers say they’re bad to use?</p>
+<p>To answer this, we first need to define what Singletons actually are in the context of programming in general. While they may seem like an advanced concept when you first hear about them, in reality singletons are just another way for programmers to trick their brains into thinking they aren’t using global variables. The idea is that you store your data <em>inside</em> a class, and then create some form of mechanism to ensure there’s only ever one instance of that class existing. This can lead to something like this c++ example from <a href="https://www.tutorialspoint.com/Explain-Cplusplus-Singleton-design-pattern">TutorialsPoint</a>:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">class</span> Singleton {</span>
+<span id="cb1-2"><a href="#cb1-2"></a>   <span class="at">static</span> Singleton *instance;</span>
+<span id="cb1-3"><a href="#cb1-3"></a>   <span class="dt">int</span> data;</span>
+<span id="cb1-4"><a href="#cb1-4"></a> </span>
+<span id="cb1-5"><a href="#cb1-5"></a>   <span class="co">// Private constructor so that no objects can be created.</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a>   Singleton() {</span>
+<span id="cb1-7"><a href="#cb1-7"></a>      data = <span class="dv">0</span>;</span>
+<span id="cb1-8"><a href="#cb1-8"></a>   }</span>
+<span id="cb1-9"><a href="#cb1-9"></a></span>
+<span id="cb1-10"><a href="#cb1-10"></a>   <span class="kw">public</span>:</span>
+<span id="cb1-11"><a href="#cb1-11"></a>   <span class="at">static</span> Singleton *getInstance() {</span>
+<span id="cb1-12"><a href="#cb1-12"></a>      <span class="cf">if</span> (!instance)</span>
+<span id="cb1-13"><a href="#cb1-13"></a>      instance = <span class="kw">new</span> Singleton;</span>
+<span id="cb1-14"><a href="#cb1-14"></a>      <span class="cf">return</span> instance;</span>
+<span id="cb1-15"><a href="#cb1-15"></a>   }</span>
+<span id="cb1-16"><a href="#cb1-16"></a></span>
+<span id="cb1-17"><a href="#cb1-17"></a>   <span class="dt">int</span> getData() {</span>
+<span id="cb1-18"><a href="#cb1-18"></a>      <span class="cf">return</span> <span class="kw">this</span> -&gt; data;</span>
+<span id="cb1-19"><a href="#cb1-19"></a>   }</span>
+<span id="cb1-20"><a href="#cb1-20"></a></span>
+<span id="cb1-21"><a href="#cb1-21"></a>   <span class="dt">void</span> setData(<span class="dt">int</span> data) {</span>
+<span id="cb1-22"><a href="#cb1-22"></a>      <span class="kw">this</span> -&gt; data = data;</span>
+<span id="cb1-23"><a href="#cb1-23"></a>   }</span>
+<span id="cb1-24"><a href="#cb1-24"></a>};</span></code></pre></div>
+<p>And then, the supposed usage</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb2-1"><a href="#cb2-1"></a><span class="co">//Initialize pointer to zero so that it can be initialized in first call to getInstance</span></span>
+<span id="cb2-2"><a href="#cb2-2"></a>Singleton *Singleton::instance = <span class="dv">0</span>;</span>
+<span id="cb2-3"><a href="#cb2-3"></a></span>
+<span id="cb2-4"><a href="#cb2-4"></a><span class="dt">int</span> main(){</span>
+<span id="cb2-5"><a href="#cb2-5"></a>   Singleton *s = s-&gt;getInstance();</span>
+<span id="cb2-6"><a href="#cb2-6"></a>   cout &lt;&lt; s-&gt;getData() &lt;&lt; endl;</span>
+<span id="cb2-7"><a href="#cb2-7"></a>   s-&gt;setData(<span class="dv">100</span>);</span>
+<span id="cb2-8"><a href="#cb2-8"></a>   cout &lt;&lt; s-&gt;getData() &lt;&lt; endl;</span>
+<span id="cb2-9"><a href="#cb2-9"></a>   <span class="cf">return</span> <span class="dv">0</span>;</span>
+<span id="cb2-10"><a href="#cb2-10"></a>}</span></code></pre></div>
+<p><em>You could technically do away with the getters &amp; setters to make this a lot simpler while still being considered a singleton, as they’re pointless encapsulation.</em></p>
+<p>If you’re unfamiliar with c++ or programming in general, the above example may seem complex, but all it’s really doing is defining a class with a static field of its own type (<code>instance</code>). Then it has a method (<code>getInstance()</code>) that returns the <code>instance</code> variable, creating a new instance if none exists. This way, there will only ever be one (single) instance of the class at a time (hence the name singleton).</p>
+<p>This is just an example of the concept itself of course. Let’s find a better use-case, like, for instance, a simple class that stores the savable data in a game:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb3-1"><a href="#cb3-1"></a><span class="kw">class</span> GameData {</span>
+<span id="cb3-2"><a href="#cb3-2"></a>   <span class="co">// Boilerplate</span></span>
+<span id="cb3-3"><a href="#cb3-3"></a>   <span class="at">static</span> GameData* Instance;</span>
+<span id="cb3-4"><a href="#cb3-4"></a>   GameData() {}</span>
+<span id="cb3-5"><a href="#cb3-5"></a><span class="kw">public</span>:</span>
+<span id="cb3-6"><a href="#cb3-6"></a>   <span class="at">static</span> GameData* get() {</span>
+<span id="cb3-7"><a href="#cb3-7"></a>      <span class="cf">if</span>(!Instance) Instance = <span class="kw">new</span> GameData;</span>
+<span id="cb3-8"><a href="#cb3-8"></a>      <span class="cf">return</span> Instance;</span>
+<span id="cb3-9"><a href="#cb3-9"></a>   }</span>
+<span id="cb3-10"><a href="#cb3-10"></a>   </span>
+<span id="cb3-11"><a href="#cb3-11"></a>   <span class="co">// Actual relevant code</span></span>
+<span id="cb3-12"><a href="#cb3-12"></a>   <span class="dt">int</span> plr_score = <span class="dv">0</span>;</span>
+<span id="cb3-13"><a href="#cb3-13"></a>   <span class="dt">int</span> plr_health = <span class="dv">100</span>;</span>
+<span id="cb3-14"><a href="#cb3-14"></a>   <span class="dt">int</span> plr_kills = <span class="dv">0</span>, plr_deaths = <span class="dv">0</span>; <span class="co">// Maybe tracking these is important</span></span>
+<span id="cb3-15"><a href="#cb3-15"></a>   </span>
+<span id="cb3-16"><a href="#cb3-16"></a>   <span class="dt">bool</span>        enemies_killed[<span class="dv">100</span>] = {}; <span class="co">// Maybe enemies stay dead in our game </span></span>
+<span id="cb3-17"><a href="#cb3-17"></a>   LevelState  level_states[<span class="dv">20</span>] = {};    <span class="co">// Maybe we need to track the states of our levels in some way.</span></span>
+<span id="cb3-18"><a href="#cb3-18"></a>   </span>
+<span id="cb3-19"><a href="#cb3-19"></a>   <span class="co">// And of course, our singleton should have procedures related to the game&#39;s save data, right?</span></span>
+<span id="cb3-20"><a href="#cb3-20"></a>   <span class="dt">void</span> OnStartGame() {</span>
+<span id="cb3-21"><a href="#cb3-21"></a>      <span class="co">// ...</span></span>
+<span id="cb3-22"><a href="#cb3-22"></a>   }</span>
+<span id="cb3-23"><a href="#cb3-23"></a>   </span>
+<span id="cb3-24"><a href="#cb3-24"></a>   <span class="dt">void</span> SaveGame() {</span>
+<span id="cb3-25"><a href="#cb3-25"></a>      <span class="co">// ...</span></span>
+<span id="cb3-26"><a href="#cb3-26"></a>   }</span>
+<span id="cb3-27"><a href="#cb3-27"></a>   </span>
+<span id="cb3-28"><a href="#cb3-28"></a>   <span class="dt">void</span> LoadGame() {</span>
+<span id="cb3-29"><a href="#cb3-29"></a>      <span class="co">// ...</span></span>
+<span id="cb3-30"><a href="#cb3-30"></a>   }</span>
+<span id="cb3-31"><a href="#cb3-31"></a>}</span></code></pre></div>
+<p>Then, when using it in the actual game, you’d be able to access the variables in a similar fashion:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb4-1"><a href="#cb4-1"></a>GameData* data = data-&gt;get();</span>
+<span id="cb4-2"><a href="#cb4-2"></a>data-&gt;plr_score += <span class="dv">50</span>;</span>
+<span id="cb4-3"><a href="#cb4-3"></a>data-&gt;plr_kills++;</span>
+<span id="cb4-4"><a href="#cb4-4"></a>data-&gt;enemies_killed[<span class="dv">38</span>] = <span class="kw">true</span>;</span>
+<span id="cb4-5"><a href="#cb4-5"></a>data-&gt;SaveGame();</span></code></pre></div>
+<p>This all seems well and good. It’s understandable why so many are drawn to the pattern. It uses OO-style encapsulation, and it’s not that hard to teach to inexperienced programmers. The benefit however, is illusory. This bit of code would have the same mechanical effect if you’d just typed all of it at global scope:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb5-1"><a href="#cb5-1"></a></span>
+<span id="cb5-2"><a href="#cb5-2"></a><span class="dt">int</span> plr_score = <span class="dv">0</span>, plr_health = <span class="dv">100</span>, plr_kills = <span class="dv">0</span>, plr_deaths = <span class="dv">0</span>;</span>
+<span id="cb5-3"><a href="#cb5-3"></a></span>
+<span id="cb5-4"><a href="#cb5-4"></a><span class="dt">bool</span>        enemies_killed[<span class="dv">100</span>];</span>
+<span id="cb5-5"><a href="#cb5-5"></a>LevelState  level_states[<span class="dv">20</span>];</span>
+<span id="cb5-6"><a href="#cb5-6"></a></span>
+<span id="cb5-7"><a href="#cb5-7"></a><span class="dt">void</span> OnStartGame()   {<span class="co">/* ... */</span>}</span>
+<span id="cb5-8"><a href="#cb5-8"></a><span class="dt">void</span> SaveGame()      {<span class="co">/* ... */</span>}</span>
+<span id="cb5-9"><a href="#cb5-9"></a><span class="dt">void</span> LoadGame()      {<span class="co">/* ... */</span>}</span></code></pre></div>
+<p>This and the singleton are functionally equivalent. Both the singleton’s members and the global variables can only have one instance, and you can access the variables from anywhere in the program. The layout of the data in memory will still be the same, and the way you access the data would be fairly straightforward:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb6-1"><a href="#cb6-1"></a>plr_score += <span class="dv">50</span>;</span>
+<span id="cb6-2"><a href="#cb6-2"></a>plr_kills++;</span>
+<span id="cb6-3"><a href="#cb6-3"></a>enemies_killed[<span class="dv">38</span>] = <span class="kw">true</span>;</span>
+<span id="cb6-4"><a href="#cb6-4"></a>SaveGame();</span></code></pre></div>
+<p>Am I suggesting you do this exact thing in your codebase? I don’t know, probably not. That’s really up to you though. I’ll be the first to admit that having all the variables just sit there at global scope global variable isn’t the best in terms of organization. It’d probably be a good idea to wrap that data in a struct:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode cpp"><code class="sourceCode cpp"><span id="cb7-1"><a href="#cb7-1"></a><span class="kw">struct</span> GameData {</span>
+<span id="cb7-2"><a href="#cb7-2"></a>   <span class="dt">int</span> plr_score = <span class="dv">0</span>, plr_health = <span class="dv">100</span>, plr_kills = <span class="dv">0</span>, plr_deaths = <span class="dv">0</span>;</span>
+<span id="cb7-3"><a href="#cb7-3"></a></span>
+<span id="cb7-4"><a href="#cb7-4"></a>   <span class="dt">bool</span>        enemies_killed[<span class="dv">100</span>];</span>
+<span id="cb7-5"><a href="#cb7-5"></a>   LevelState  level_states[<span class="dv">20</span>];</span>
+<span id="cb7-6"><a href="#cb7-6"></a>};</span>
+<span id="cb7-7"><a href="#cb7-7"></a></span>
+<span id="cb7-8"><a href="#cb7-8"></a>GameData Data = {};</span></code></pre></div>
+<p>The point here isn’t “You should use X pattern instead of Y pattern because of Z reasons”. Rather that programmers (seemingly) don’t use singletons because they provide an actual tangible benefit, but because they want to avoid using global variables, even when they’re warranted. In most games, there is only ever one copy of the data that needs to be tracked for saving. Any other data (player position, for example) is usually gathered at the moment the game gets saved. So why wrap that data inside a class with an entire extra mechanism that ensures only one instance of that class, while making working with the data itself harder? There really isn’t much of an actual rational for it.</p>
+<p>What was this article supposed to be about? Oh, right, <em>Unity</em>.</p>
+<p>Unity presents a couple fun problems when we try to work with global data. See, in a class-based language like Java or C#, you’d need to wrap everything in a static class:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">public</span> <span class="kw">static</span> <span class="kw">class</span> GameData {</span>
+<span id="cb8-2"><a href="#cb8-2"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">int</span> plr_score   = <span class="dv">0</span>;</span>
+<span id="cb8-3"><a href="#cb8-3"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">int</span> plr_health  = <span class="dv">100</span>;</span>
+<span id="cb8-4"><a href="#cb8-4"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">int</span> plr_kills   = <span class="dv">0</span>;</span>
+<span id="cb8-5"><a href="#cb8-5"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">int</span> plr_deaths  = <span class="dv">0</span>;</span>
+<span id="cb8-6"><a href="#cb8-6"></a>   </span>
+<span id="cb8-7"><a href="#cb8-7"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">bool</span>[]       enemies_killed = <span class="kw">new</span> <span class="dt">bool</span>[<span class="dv">100</span>];</span>
+<span id="cb8-8"><a href="#cb8-8"></a>   <span class="kw">public</span> <span class="kw">static</span> LevelState[] level_states = <span class="kw">new</span> LevelState[<span class="dv">20</span>];</span>
+<span id="cb8-9"><a href="#cb8-9"></a>   </span>
+<span id="cb8-10"><a href="#cb8-10"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">void</span> <span class="fu">OnStartGame</span>()   {<span class="co">/* ... */</span>}</span>
+<span id="cb8-11"><a href="#cb8-11"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">void</span> <span class="fu">SaveGame</span>()      {<span class="co">/* ... */</span>}</span>
+<span id="cb8-12"><a href="#cb8-12"></a>   <span class="kw">public</span> <span class="kw">static</span> <span class="dt">void</span> <span class="fu">LoadGame</span>()      {<span class="co">/* ... */</span>}</span>
+<span id="cb8-13"><a href="#cb8-13"></a>}</span>
+<span id="cb8-14"><a href="#cb8-14"></a></span>
+<span id="cb8-15"><a href="#cb8-15"></a><span class="co">// Usage:</span></span>
+<span id="cb8-16"><a href="#cb8-16"></a>GameData.<span class="fu">plr_score</span> += <span class="dv">50</span>;</span>
+<span id="cb8-17"><a href="#cb8-17"></a>GameData.<span class="fu">plr_kills</span>++;</span>
+<span id="cb8-18"><a href="#cb8-18"></a>GameData.<span class="fu">enemies_killed</span>[<span class="dv">38</span>] = <span class="kw">true</span>;</span>
+<span id="cb8-19"><a href="#cb8-19"></a>GameData.<span class="fu">SaveGame</span>();</span></code></pre></div>
+<p>Okay, a bit more verbose than just the global version, but still totally manageable. If you try to do this in Unity however, you’ll quickly run into the following:</p>
+<ul>
+<li>There’s no inspector support whatsoever for this. This is one of the more powerful features of Unity, and is a great aid with debugging. <em>At the bare minimum</em>, you’d need to make a custom editor window that let you edit all the values of that class. <em>Ideally</em> you’d build that editor using reflection, so you wouldn’t need to manually draw the widgets for each field.</li>
+<li>How do you actually work with GameObjects with this thing? Yes, you could instantiate stuff just fine, but how do you know when to do so? I guess you could probably hook into some editor callback somewhere that tells you when the game starts, or when a scene is loaded… And you miss out on just being able to manually set up GameObject references in the inspector, which is really useful in some cases. If you had something just sitting in a scene when the game starts, and you needed to get a reference to it, how would you easily do that?</li>
+</ul>
+<p>I think these are the two biggest reasons Singletons are so common in the Unity community. If you set up a generic class like this:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">public</span> <span class="kw">abstract</span> <span class="kw">class</span> Controller&lt;T&gt; : MonoBehaviour</span>
+<span id="cb9-2"><a href="#cb9-2"></a>        where T : MonoBehaviour</span>
+<span id="cb9-3"><a href="#cb9-3"></a>{</span>
+<span id="cb9-4"><a href="#cb9-4"></a>    <span class="kw">public</span> <span class="kw">static</span> T Live;</span>
+<span id="cb9-5"><a href="#cb9-5"></a>    <span class="kw">public</span> <span class="kw">static</span> <span class="dt">bool</span> Exists =&gt; Live != <span class="kw">null</span>;</span>
+<span id="cb9-6"><a href="#cb9-6"></a></span>
+<span id="cb9-7"><a href="#cb9-7"></a>    <span class="kw">protected</span> <span class="kw">virtual</span> <span class="dt">void</span> <span class="fu">OnEnable</span>() =&gt; Live = GetComponent&lt;T&gt;();</span>
+<span id="cb9-8"><a href="#cb9-8"></a>    <span class="kw">protected</span> <span class="kw">virtual</span> <span class="dt">void</span> <span class="fu">OnDisable</span>() =&gt; Live = <span class="kw">null</span>;</span>
+<span id="cb9-9"><a href="#cb9-9"></a>}</span></code></pre></div>
+<p>And implement it like this:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode c#"><code class="sourceCode cs"><span id="cb10-1"><a href="#cb10-1"></a><span class="kw">public</span> <span class="kw">class</span> GameData : Controller&lt;Game&gt; { </span>
+<span id="cb10-2"><a href="#cb10-2"></a>   <span class="kw">public</span> <span class="dt">int</span> plr_score   = <span class="dv">0</span>;</span>
+<span id="cb10-3"><a href="#cb10-3"></a>   <span class="kw">public</span> <span class="dt">int</span> plr_health  = <span class="dv">100</span>;</span>
+<span id="cb10-4"><a href="#cb10-4"></a>   <span class="kw">public</span> <span class="dt">int</span> plr_kills   = <span class="dv">0</span>;</span>
+<span id="cb10-5"><a href="#cb10-5"></a>   <span class="kw">public</span> <span class="dt">int</span> plr_deaths  = <span class="dv">0</span>;</span>
+<span id="cb10-6"><a href="#cb10-6"></a>   </span>
+<span id="cb10-7"><a href="#cb10-7"></a>   <span class="kw">public</span> <span class="dt">bool</span>[]       enemies_killed = <span class="kw">new</span> <span class="dt">bool</span>[<span class="dv">100</span>];</span>
+<span id="cb10-8"><a href="#cb10-8"></a>   <span class="kw">public</span> LevelState[] level_states = <span class="kw">new</span> LevelState[<span class="dv">20</span>];</span>
+<span id="cb10-9"><a href="#cb10-9"></a>   </span>
+<span id="cb10-10"><a href="#cb10-10"></a>   <span class="kw">public</span> <span class="dt">void</span> <span class="fu">OnStartGame</span>()   {<span class="co">/* ... */</span>}</span>
+<span id="cb10-11"><a href="#cb10-11"></a>   <span class="kw">public</span> <span class="dt">void</span> <span class="fu">SaveGame</span>()      {<span class="co">/* ... */</span>}</span>
+<span id="cb10-12"><a href="#cb10-12"></a>   <span class="kw">public</span> <span class="dt">void</span> <span class="fu">LoadGame</span>()      {<span class="co">/* ... */</span>}</span>
+<span id="cb10-13"><a href="#cb10-13"></a>}</span>
+<span id="cb10-14"><a href="#cb10-14"></a></span>
+<span id="cb10-15"><a href="#cb10-15"></a><span class="co">// Usage:</span></span>
+<span id="cb10-16"><a href="#cb10-16"></a>GameData.<span class="fu">Live</span>.<span class="fu">plr_score</span> += <span class="dv">50</span>;</span>
+<span id="cb10-17"><a href="#cb10-17"></a>GameData.<span class="fu">Live</span>.<span class="fu">plr_kills</span>++;</span>
+<span id="cb10-18"><a href="#cb10-18"></a>GameData.<span class="fu">Live</span>.<span class="fu">enemies_killed</span>[<span class="dv">38</span>] = <span class="kw">true</span>;</span>
+<span id="cb10-19"><a href="#cb10-19"></a>GameData.<span class="fu">Live</span>.<span class="fu">SaveGame</span>();</span></code></pre></div>
+<p>It solves both issues fairly cleanly. You can easily have it stuck on a GameObject and inspect it at will. And you could set up any GameObject references you needed right there in the inspector, and you have a root transform right there to spawn new ones.</p>
+<p>However, there is one issue I haven’t mentioned yet. How do you make sure everything is initialized properly? That’ll have to wait till the next post</p>
+</div>
+	
+		</div></div>
+	
+	
+	<div id="copyright_notice"> © 2020 C.L. Kerl </div>
+	
+	</div> </div>
+</body>
+</html>
